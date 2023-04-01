@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("com.android.library")
+    id("dev.icerock.mobile.multiplatform-resources")
 }
 
 kotlin {
@@ -22,13 +23,21 @@ kotlin {
         version = "1.0"
         ios.deploymentTarget = "14.1"
         podfile = project.file("../ios/Podfile")
+        pod("GBDeviceInfo") {
+            version = "7.2.0"
+        }
         framework {
             baseName = "shared"
+            isStatic = true
         }
     }
     
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                api("dev.icerock.moko:resources:0.21.1")
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
@@ -64,4 +73,9 @@ android {
         minSdk = 24
         targetSdk = 33
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "com.example.kmmmr"
+    iosBaseLocalizationRegion = "en"
 }
